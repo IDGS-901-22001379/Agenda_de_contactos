@@ -7,8 +7,6 @@ const App = () => {
     <>
       <Header />
       <main className="container mt-4">
-        {/* Primero el formulario, abajo la tabla */}
-
         <hr className="my-4" />
         <Contactos />
       </main>

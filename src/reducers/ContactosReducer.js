@@ -1,13 +1,15 @@
-// Definicion el reducer de contactos cmo una arrow funcion que recibe
-// solo dos prarametros que son : un state  un action
 export const ContactosReducer = (state, action) => {
-  //Todo action tiene un tipo, para lo cual agragamos un switch-case
-  //para determinar que tipo  es
   switch (action.type) {
     case "add":
-      return [...state, action.payload];
+      return [action.payload, ...state];
+
     case "delete":
-      return state.filter((actual) => actual.id !== action.payload);
+      return state.filter((c) => c.id !== action.payload.id);
+
+    case "update":
+      return state.map((c) =>
+        c.id === action.payload.id ? { ...c, ...action.payload.data } : c
+      );
 
     default:
       return state;

@@ -3,22 +3,31 @@ import TablaContactos from "./TablaContactos";
 import { ContactosReducer } from "../../reducers/ContactosReducer";
 import Formulario from "./Formulario";
 
-// Inicializar desde localStorage
 const init = () => {
   const contactos = localStorage.getItem("contactos");
   return contactos ? JSON.parse(contactos) : [];
 };
 
 const Contactos = () => {
-  // Reducer con estado inicial desde localStorage
   const [state, dispatch] = useReducer(ContactosReducer, [], init);
 
-  // Controla la visibilidad del formulario
+  // Control del formulario (mostrar/ocultar) y edición
   const [formView, setFormView] = useState(false);
+  const [editContact, setEditContact] = useState(null); // objeto completo o null
 
   useEffect(() => {
     localStorage.setItem("contactos", JSON.stringify(state));
   }, [state]);
+
+  const handleEdit = (contacto) => {
+    setEditContact(contacto);
+    setFormView(true);
+  };
+
+  const handleCloseForm = () => {
+    setEditContact(null);
+    setFormView(false);
+  };
 
   return (
     <div className="container mt-3">
@@ -34,11 +43,20 @@ const Contactos = () => {
 
       {formView && (
         <div className="mb-3">
-          <Formulario dispatch={dispatch} />
+          <Formulario
+            key={editContact?.id || "nuevo"} // fuerza reset visual al cambiar entre editar/nuevo
+            dispatch={dispatch}
+            initialData={editContact}
+            onAfterSubmit={handleCloseForm}
+          />
         </div>
       )}
 
-      <TablaContactos contactos={state} dispatch={dispatch} />
+      <TablaContactos
+        contactos={state}
+        dispatch={dispatch}
+        onEdit={handleEdit}
+      />
     </div>
   );
 };
